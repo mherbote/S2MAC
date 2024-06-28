@@ -1,0 +1,22 @@
+﻿<Window x:Class="Z80_S2MAC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Z80_S2MAC"
+        mc:Ignorable="d"
+        Title="Z80 Convert C- to MAC- File" Height="1000" Width="1250">
+    <Grid >
+        <Button Content="Quelle (S-File)" HorizontalAlignment="Left" Margin="020,10,0,0" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" Height="20" Width="100" Click="Quelle_Click"/>
+
+        <TextBox x:Name="Quelle" HorizontalAlignment="Left" Margin="020,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Grid.ColumnSpan="2" RenderTransformOrigin="0.448,-3.314" IsEnabled="False" FontFamily="Arial" FontWeight="Bold" Height="18"/>
+        <TextBox x:Name="Ziel"   HorizontalAlignment="Left" Margin="620,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600"                     RenderTransformOrigin="0.509,-1.45"  IsEnabled="False" FontFamily="Arial" FontWeight="Bold" Height="18"/>
+
+        <ScrollViewer Margin="020,70,615,20">
+            <TextBox x:Name="S_Quelle" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Height="870"                 Grid.ColumnSpan="1" FontFamily="Courier New" IsEnabled="True" />
+        </ScrollViewer>
+        <ScrollViewer Margin="620,70,015,20">
+            <TextBox x:Name="MAC_Ziel" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Height="870" Grid.Column="1" Grid.ColumnSpan="2" FontFamily="Courier New" IsEnabled="True" />
+        </ScrollViewer>
+    </Grid>
+</Window>
