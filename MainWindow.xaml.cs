@@ -28,6 +28,10 @@ namespace Z80_S2MAC
     {
         public bool endLine = false;
         public string lineMAC;
+        public string lineMAC1;
+        //public byte[] Zeichen;
+        public string ModulName;
+        public int i1,i2;
         struct testStruct
         {
             public int WAHLi;
@@ -38,9 +42,13 @@ namespace Z80_S2MAC
                                new testStruct { WAHLi=1, TESTi="BER", CHA1i="DS", CHA2i="" },
                                new testStruct { WAHLi=1, TESTi="CMP", CHA1i="CP", CHA2i="" },
                                new testStruct { WAHLi=1, TESTi="JMP", CHA1i="JP", CHA2i="" },
-                               new testStruct { WAHLi=1, TESTi="EXAF", CHA1i="EX\tAF,AF'", CHA2i="" },
+                               new testStruct { WAHLi=1, TESTi="EXAF", CHA1i="EX\tAF,AF'\t;'", CHA2i="" },
                                new testStruct { WAHLi=1, TESTi="RZ", CHA1i="RET\tZ", CHA2i="" },
                                new testStruct { WAHLi=1, TESTi="RNZ", CHA1i="RET\tNZ", CHA2i="" },
+                               new testStruct { WAHLi=1, TESTi="RC", CHA1i="RET\tC", CHA2i="" },
+                               new testStruct { WAHLi=1, TESTi="RNC", CHA1i="RET\tNC", CHA2i="" },
+                               new testStruct { WAHLi=1, TESTi="RP", CHA1i="RET\tP", CHA2i="" },
+                               new testStruct { WAHLi=1, TESTi="CALL", CHA1i="CALL", CHA2i="" },
 
                                new testStruct { WAHLi=2, TESTi="EQU", CHA1i="EQU", CHA2i="" },
 
@@ -76,10 +84,6 @@ namespace Z80_S2MAC
                                new testStruct { WAHLi=11, TESTi="JPM", CHA1i="JP", CHA2i="M," },
                                new testStruct { WAHLi=11, TESTi="JPP", CHA1i="JP", CHA2i="P," },
                                new testStruct { WAHLi=11, TESTi="JPPE", CHA1i="JP", CHA2i="PE," },
-                               new testStruct { WAHLi=11, TESTi="RZ", CHA1i="RET", CHA2i="Z," },
-                               new testStruct { WAHLi=11, TESTi="RNZ", CHA1i="RET", CHA2i="NZ," },
-                               new testStruct { WAHLi=11, TESTi="RC", CHA1i="RET", CHA2i="C," },
-                               new testStruct { WAHLi=11, TESTi="RNC", CHA1i="RET", CHA2i="NC," },
                                new testStruct { WAHLi=11, TESTi="SBC\tA", CHA1i="SBC", CHA2i="A," },
                                new testStruct { WAHLi=11, TESTi="ADC\tA", CHA1i="ADC", CHA2i="A," },
 
@@ -88,11 +92,11 @@ namespace Z80_S2MAC
                                new testStruct { WAHLi=13, TESTi="SBC\tHL", CHA1i="SBC", CHA2i="HL," },
                                new testStruct { WAHLi=13, TESTi="ADC\tHL", CHA1i="ADC", CHA2i="HL," },
 
-                               new testStruct { WAHLi=101, TESTi="EXAF", CHA1i="EX\tAF,AF'", CHA2i="" },
-                               new testStruct { WAHLi=101, TESTi="RZ", CHA1i="RET\tZ", CHA2i="" },
-                               new testStruct { WAHLi=101, TESTi="RNZ", CHA1i="RET\tNZ", CHA2i="" },
+                               new testStruct { WAHLi=101, TESTi="EXAF", CHA1i="EX\tAF,AF'\t;'", CHA2i="" },
                                new testStruct { WAHLi=101, TESTi="RC", CHA1i="RET\tC", CHA2i="" },
                                new testStruct { WAHLi=101, TESTi="RNC", CHA1i="RET\tNC", CHA2i="" },
+                               new testStruct { WAHLi=101, TESTi="RZ", CHA1i="RET\tZ", CHA2i="" },
+                               new testStruct { WAHLi=101, TESTi="RNZ", CHA1i="RET\tNZ", CHA2i="" },
                                new testStruct { WAHLi=101, TESTi="RP", CHA1i="RET\tP", CHA2i="" },
 
                                new testStruct { WAHLi=201, TESTi="EJEC", CHA1i="PAGE", CHA2i="" },
@@ -120,6 +124,7 @@ namespace Z80_S2MAC
             if (openFileDialog.ShowDialog() == true)
             {
                 Quelle.Text = openFileDialog.FileName;
+                ModulName = openFileDialog.SafeFileName.Substring(0,2)+ ".";
 
                 // Zieldateiname erstellen
                 lineMAC = openFileDialog.FileName;
@@ -167,10 +172,73 @@ namespace Z80_S2MAC
                     }
 
                     if (endLine & lineMAC == "")
-                    { }
+                    {
+                        lineMAC1 = lineMAC;
+                    }
                     else
                     {
-                        MAC_Ziel.Text = MAC_Ziel.Text + lineMAC + "\r";
+                        // lineMAC a) Tabulatoren in Leerzeichen wandeln mit Spalten 12,20,40
+                        //         b) ModulName einfügen
+                        i2 = 0;
+                        //Zeichen = Encoding.UTF8.GetBytes(lineMAC);
+                        comment = false;
+
+                        if (lineMAC == "")
+                        {
+                            comment = true;
+                            lineMAC1 = lineMAC;
+                        }
+                        else if (lineMAC.Substring(0, 1) == ";")
+                            {
+                                comment = true;
+                                lineMAC1 = lineMAC;
+                            }
+                            else if (lineMAC.Substring(0, 1) != "\t")
+                            {
+                                lineMAC = ModulName + lineMAC;
+                            }
+
+                        if (!comment)
+                        {
+                            lineMAC1 = "";
+                            for (i1 = 0; i1 < lineMAC.Length; i1++)
+                            {
+                                if (lineMAC.Substring(i1, 1) == "\t")
+                                    {
+                                    if (i2 < 12)
+                                    {
+                                        while (i2 < 12)
+                                        {
+                                            i2 += 1;
+                                            lineMAC1 += " ";
+                                        }
+                                    }
+                                    else if (i2 >= 12 && i2 < 20)
+                                    {
+                                        while (i2 < 20)
+                                        {
+                                            i2 += 1;
+                                            lineMAC1 += " ";
+                                        }
+                                    }
+                                    else if (i2 >= 20 && i2 < 40)
+                                    {
+                                        while (i2 < 40)
+                                        {
+                                            i2 += 1;
+                                            lineMAC1 += " ";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    i2 += 1;
+                                    lineMAC1 += lineMAC.Substring(i1,1);
+                                }
+                            }
+                        }
+
+                        MAC_Ziel.Text = MAC_Ziel.Text + lineMAC1 + "\r";
                     }
                 }
                 //File.Create(Ziel.Text);

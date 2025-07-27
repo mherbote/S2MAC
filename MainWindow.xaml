@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Z80_S2MAC"
         mc:Ignorable="d"
-        Title="Z80 Convert C- to MAC- File" Height="1000" Width="1250">
+        Title="Z80 Convert S- to MAC- File" Height="1000" Width="1250">
     <Grid >
         <Button Content="Quelle (S-File)" HorizontalAlignment="Left" Margin="020,10,0,0" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" Height="20" Width="100" Click="Quelle_Click"/>
 
